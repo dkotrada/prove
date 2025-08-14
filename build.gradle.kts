@@ -20,6 +20,8 @@ repositories {
 dependencies {
 	implementation("org.springframework.boot:spring-boot-starter-web")
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
+	implementation("org.springframework.modulith:spring-modulith-starter-core:1.3.2")
+	testImplementation("org.springframework.modulith:spring-modulith-starter-test:1.3.2")
 	testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 }
 
