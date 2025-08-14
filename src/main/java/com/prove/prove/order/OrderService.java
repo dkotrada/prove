@@ -23,21 +23,11 @@ public class OrderService {
 
     @Transactional
     public void placeOrder(String orderId, List<OrderItemDto> items, String customerId) {
-        double totalAmount = items.stream()
-                .mapToDouble(item -> item.price() * item.quantity())
-                .sum();
-
         List<OrderItem> orderItems = items.stream()
                 .map(dto -> new OrderItem(dto.productId(), dto.quantity(), dto.price()))
                 .toList();
 
-        Order order = new Order(
-                orderId,
-                customerId,
-                totalAmount,
-                LocalDateTime.now(),
-                orderItems
-                );
+        Order order = Order.create(orderId, customerId, orderItems);
         orderRepository.save(order);
         eventPublisher.publishEvent(new OrderPlacedEvent(orderId, items, customerId));
     }

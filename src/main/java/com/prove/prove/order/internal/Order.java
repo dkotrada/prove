@@ -35,12 +35,23 @@ public class Order {
     public Order() {
     }
 
-    public Order(String orderId, String customerId, double totalAmount, LocalDateTime orderDate, List<OrderItem> items) {
+    private Order(String orderId, String customerId, double totalAmount, LocalDateTime orderDate, List<OrderItem> items) {
         this.orderId = orderId;
         this.customerId = customerId;
         this.totalAmount = totalAmount;
         this.orderDate = orderDate;
         this.items = items;
+    }
+
+    public static double calculateTotal(List<OrderItem> items) {
+        return items.stream()
+                .mapToDouble(item -> item.price() * item.quantity())
+                .sum();
+    }
+
+    public static Order create(String orderId, String customerId, List<OrderItem> items) {
+        double totalAmount = calculateTotal(items);
+        return new Order(orderId, customerId, totalAmount, LocalDateTime.now(), items);
     }
 
     public String getOrderId() {
