@@ -4,6 +4,7 @@ import com.prove.prove.order.OrderRequestDto;
 import com.prove.prove.order.OrderResponseDto;
 import com.prove.prove.order.OrderService;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -28,7 +29,7 @@ public class RestController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<OrderResponseDto> getOrder(@PathVariable String id) {
+    public ResponseEntity<OrderResponseDto> getOrder(@PathVariable @NotBlank(message = "Order ID cannot be blank") String id) {
         return orderService.findOrderById(id)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
