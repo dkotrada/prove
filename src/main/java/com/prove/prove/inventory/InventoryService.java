@@ -3,7 +3,7 @@ package com.prove.prove.inventory;
 import com.prove.prove.inventory.internal.InventoryRepository;
 import com.prove.prove.order.OrderItemDto;
 import com.prove.prove.order.OrderPlacedEvent;
-import jakarta.transaction.Transactional;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Service;
 

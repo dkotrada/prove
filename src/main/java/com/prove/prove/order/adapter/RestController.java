@@ -1,12 +1,11 @@
 package com.prove.prove.order.adapter;
 
 import com.prove.prove.order.OrderRequestDto;
+import com.prove.prove.order.OrderResponseDto;
 import com.prove.prove.order.OrderService;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 
 import java.net.URI;
@@ -27,4 +26,12 @@ public class RestController {
         orderService.placeOrder(orderId, request.items(), request.customerId());
         return ResponseEntity.created(URI.create("/orders/" + orderId)).body(orderId);
     }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<OrderResponseDto> getOrder(@PathVariable String id) {
+        return orderService.findOrderById(id)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
+    }
+
 }

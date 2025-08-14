@@ -3,12 +3,13 @@ package com.prove.prove.order;
 import com.prove.prove.order.internal.Order;
 import com.prove.prove.order.internal.OrderItem;
 import com.prove.prove.order.internal.OrderRepository;
-import jakarta.transaction.Transactional;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class OrderService {
@@ -39,5 +40,19 @@ public class OrderService {
                 );
         orderRepository.save(order);
         eventPublisher.publishEvent(new OrderPlacedEvent(orderId, items, customerId));
+    }
+
+    @Transactional(readOnly = true)
+    public Optional<OrderResponseDto> findOrderById(String orderId) {
+        return orderRepository.findById(orderId)
+                .map(order -> new OrderResponseDto(
+                        order.getOrderId(),
+                        order.getCustomerId(),
+                        order.getTotalAmount(),
+                        order.getOrderDate(),
+                        order.getItems().stream()
+                                .map(item -> new OrderItemDto(item.productId(), item.quantity(), item.price()))
+                                .toList()
+                ));
     }
 }
