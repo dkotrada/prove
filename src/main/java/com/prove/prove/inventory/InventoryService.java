@@ -1,8 +1,8 @@
 package com.prove.prove.inventory;
 
 import com.prove.prove.inventory.internal.InventoryRepository;
+import com.prove.prove.order.OrderItemDto;
 import com.prove.prove.order.OrderPlacedEvent;
-import com.prove.prove.order.internal.OrderItem;
 import jakarta.transaction.Transactional;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Service;
@@ -18,7 +18,7 @@ public class InventoryService {
     @EventListener
     @Transactional
     public void handleOrderPlacementEvent(OrderPlacedEvent event) {
-        for (OrderItem item : event.items()) {
+        for (OrderItemDto item : event.items()) {
             inventoryRepository.updateStock(item.productId(), item.quantity());
         }
     }
