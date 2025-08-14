@@ -1,6 +1,8 @@
 package com.prove.prove.order.internal;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotEmpty;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -9,13 +11,19 @@ import java.util.List;
 @Table(name = "orders")
 public class Order {
     @Id
+    @NotBlank(message = "Order ID cannot be blank")
     private String orderId;
+
     @Column(name = "customer_id", nullable = false)
     private String customerId;
+
     @Column(name = "total_amount", nullable = false)
     private double totalAmount;
+
     @Column(name = "order_date", nullable = false)
     private LocalDateTime orderDate;
+
+    @NotEmpty(message = "Order must have at least one item")
     @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(
             name = "order_items",

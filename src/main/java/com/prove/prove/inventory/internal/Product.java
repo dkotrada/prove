@@ -2,12 +2,16 @@ package com.prove.prove.inventory.internal;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.PositiveOrZero;
 
 @Entity
 public class Product {
     @Id
+    @NotBlank(message = "Product ID cannot be blank")
     private String productId;
     private String name;
+    @PositiveOrZero(message = "Quantity cannot be negative")
     private int quantity;
     private double price;
 
