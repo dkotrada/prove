@@ -29,10 +29,10 @@ public class RestController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<OrderResponseDto> getOrder(@PathVariable @NotBlank(message = "Order ID cannot be blank") String id) {
-        return orderService.findOrderById(id)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+    public ResponseEntity<OrderResponseDto> getOrder(
+            @PathVariable @NotBlank(message = "Order ID cannot be blank") String id) {
+        OrderResponseDto dto = orderService.findOrderByIdOrThrow(id);
+        return ResponseEntity.ok(dto);
     }
 
 }

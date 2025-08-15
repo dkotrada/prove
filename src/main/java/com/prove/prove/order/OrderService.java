@@ -7,9 +7,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class OrderService {
@@ -33,7 +31,7 @@ public class OrderService {
     }
 
     @Transactional(readOnly = true)
-    public Optional<OrderResponseDto> findOrderById(String orderId) {
+    public OrderResponseDto findOrderByIdOrThrow(String orderId) {
         return orderRepository.findById(orderId)
                 .map(order -> new OrderResponseDto(
                         order.getOrderId(),
@@ -41,8 +39,12 @@ public class OrderService {
                         order.getTotalAmount(),
                         order.getOrderDate(),
                         order.getItems().stream()
-                                .map(item -> new OrderItemDto(item.productId(), item.quantity(), item.price()))
+                                .map(item -> new OrderItemDto(
+                                        item.productId(),
+                                        item.quantity(),
+                                        item.price()))
                                 .toList()
-                ));
+                ))
+                .orElseThrow(() -> new OrderNotFoundException(orderId));
     }
 }
