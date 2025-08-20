@@ -1,6 +1,7 @@
 package com.prove.prove.order.adapter;
 
-import com.prove.prove.order.OrderNotFoundException;
+import com.tagitech.provelib.ErrorResponse;
+import com.tagitech.provelib.exceptions.OrderNotFoundException;
 import jakarta.validation.ConstraintViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -13,8 +14,8 @@ import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 
-@ControllerAdvice
-public class GlobalExceptionHandler {
+@ControllerAdvice(assignableTypes = OrderRestApi.class)
+public class OrderExceptionHandler {
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ErrorResponse> handleValidationErrors(

@@ -1,8 +1,8 @@
 package com.prove.prove.inventory;
 
+import com.tagitech.provelib.dto.OrderItemDto;
 import com.prove.prove.inventory.internal.InventoryRepository;
-import com.prove.prove.order.OrderItemDto;
-import com.prove.prove.order.OrderPlacedEvent;
+import com.prove.prove.events.OrderPlacedEvent;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Service;
@@ -19,7 +19,16 @@ public class InventoryService {
     @Transactional
     public void handleOrderPlacementEvent(OrderPlacedEvent event) {
         for (OrderItemDto item : event.items()) {
-            inventoryRepository.updateStock(item.productId(), item.quantity());
+            inventoryRepository.findById(item.getProductId()).ifPresentOrElse(
+                    product -> {
+                        if (product.getQuantity() < item.getQuantity()) {
+                            throw new IllegalArgumentException("Insufficient stock for product " + item.getProductId());
+                        }
+                    },
+                    () -> {
+                        throw new IllegalArgumentException("Product not found " + item.getProductId());
+                    }
+            );
         }
     }
 }
