@@ -2,9 +2,11 @@ spring:
   application:
     name: prove
   datasource:
-    url: jdbc:sqlite:./db/prove-sqlite3.db
-    driver-class-name: org.sqlite.JDBC
+    url: jdbc:postgresql://localhost:5432/prove
+    username: postgres
+    password: postgres
+    driver-class-name: org.postgresql.Driver
   jpa:
-    database-platform: org.hibernate.community.dialect.SQLiteDialect
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
     hibernate:
       ddl-auto: update

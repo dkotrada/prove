@@ -25,7 +25,4 @@ VALUES
     ('pay2', 'order2', 29.99, 'COMPLETED', '2025-08-19 11:05:00');
 
 -- migrate:down
-DELETE FROM payments;
-DELETE FROM order_items;
-DELETE FROM orders;
-DELETE FROM products;
+
