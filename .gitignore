@@ -3,3 +3,6 @@
 .gradle
 build
 .devbox
+db/migrations/prove-sqlite3.db
+.DS_Store
+/db/prove-sqlite3.db
