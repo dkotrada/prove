@@ -32,15 +32,27 @@ public class Order {
     )
     private List<OrderItem> items;
 
+    @NotBlank(message = "Status cannot be blank")
+    @Column(nullable = false)
+    private String status;
+
     public Order() {
     }
 
-    private Order(String orderId, String customerId, double totalAmount, LocalDateTime orderDate, List<OrderItem> items) {
+    private Order(
+            String orderId,
+            String customerId,
+            double totalAmount,
+            LocalDateTime orderDate,
+            List<OrderItem> items,
+            String status
+    ) {
         this.orderId = orderId;
         this.customerId = customerId;
         this.totalAmount = totalAmount;
         this.orderDate = orderDate;
         this.items = items;
+        this.status = status;
     }
 
     public static double calculateTotal(List<OrderItem> items) {
@@ -51,7 +63,7 @@ public class Order {
 
     public static Order create(String orderId, String customerId, List<OrderItem> items) {
         double totalAmount = calculateTotal(items);
-        return new Order(orderId, customerId, totalAmount, LocalDateTime.now(), items);
+        return new Order(orderId, customerId, totalAmount, LocalDateTime.now(), items, "PENDING");
     }
 
     public String getOrderId() {
@@ -92,6 +104,14 @@ public class Order {
 
     public void setItems(List<OrderItem> items) {
         this.items = items;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 }
 

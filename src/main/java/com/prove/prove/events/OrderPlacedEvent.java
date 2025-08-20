@@ -1,4 +1,6 @@
-package com.prove.prove.order;
+package com.prove.prove.events;
+
+import com.tagitech.provelib.dto.OrderItemDto;
 
 import java.util.List;
 

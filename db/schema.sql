@@ -4,7 +4,7 @@ CREATE TABLE orders (
     customer_id TEXT NOT NULL,
     total_amount REAL NOT NULL,
     order_date DATETIME DEFAULT CURRENT_TIMESTAMP
-);
+, status TEXT NOT NULL DEFAULT 'PENDING');
 CREATE TABLE order_items (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     order_id TEXT NOT NULL,
@@ -20,6 +20,17 @@ CREATE TABLE products (
     quantity INTEGER NOT NULL,
     price REAL NOT NULL
 );
+CREATE TABLE payments (
+    payment_id TEXT PRIMARY KEY,
+    order_id TEXT NOT NULL,
+    amount REAL NOT NULL,
+    status TEXT NOT NULL,
+    payment_date DATETIME DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT fk_payments_orders FOREIGN KEY (order_id) REFERENCES orders(order_id)
+);
 -- Dbmate schema migrations
 INSERT INTO "schema_migrations" (version) VALUES
-  ('20250814104202');
+  ('20250814104202'),
+  ('20250819182134'),
+  ('20250819183906'),
+  ('20250819183936');

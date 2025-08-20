@@ -1,3 +1,6 @@
+import org.gradle.api.tasks.Exec
+import java.io.File
+
 plugins {
 	java
 	id("org.springframework.boot") version "3.5.4"
@@ -14,10 +17,13 @@ java {
 }
 
 repositories {
+	mavenLocal()
 	mavenCentral()
 }
 
 dependencies {
+
+	implementation("com.tagitech:provelib:0.0.0") // maven local
 	implementation("org.springframework.boot:spring-boot-starter-web")
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
 	implementation("org.springframework.boot:spring-boot-starter-data-jpa")
@@ -31,4 +37,29 @@ dependencies {
 
 tasks.withType<Test> {
 	useJUnitPlatform()
+}
+
+val provelibDir = File(rootProject.projectDir.parentFile, "provelib")
+
+tasks.register("bootstrapProvelib") {
+    group = "setup"
+    description = "Bootstraps local development by cloning and publishing provelib."
+
+    doLast {
+        if (!provelibDir.exists()) {
+            println("Cloning provelib...")
+            exec {
+                workingDir = rootProject.projectDir.parentFile
+                commandLine("git", "clone", "https://github.com/dkotrada/provelib.git")
+            }
+        } else {
+            println("provelib already exists at: $provelibDir")
+        }
+
+        println("Publishing provelib to mavenLocal...")
+        exec {
+            workingDir = provelibDir
+            commandLine("./gradlew", "publish")
+        }
+    }
 }

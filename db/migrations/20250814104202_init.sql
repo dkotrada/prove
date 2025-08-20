@@ -27,4 +27,7 @@ CREATE TABLE products (
 );
 
 -- migrate:down
-
+-- migrate:down
+DROP TABLE IF EXISTS order_items;
+DROP TABLE IF EXISTS orders;
+DROP TABLE IF EXISTS products;

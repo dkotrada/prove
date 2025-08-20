@@ -8,16 +8,15 @@ import jakarta.validation.constraints.NotBlank;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-
 import java.net.URI;
 import java.util.UUID;
 
 @org.springframework.web.bind.annotation.RestController
 @RequestMapping("/orders")
-public class RestController {
+public class OrderRestApi {
     private final OrderService orderService;
 
-    public RestController(OrderService orderService) {
+    public OrderRestApi(OrderService orderService) {
         this.orderService = orderService;
     }
 
@@ -30,7 +29,8 @@ public class RestController {
 
     @GetMapping("/{id}")
     public ResponseEntity<OrderResponseDto> getOrder(
-            @PathVariable @NotBlank(message = "Order ID cannot be blank") String id) {
+            @PathVariable @NotBlank(message = "Order ID cannot be blank") String id
+    ) {
         OrderResponseDto dto = orderService.findOrderByIdOrThrow(id);
         return ResponseEntity.ok(dto);
     }
