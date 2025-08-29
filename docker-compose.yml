@@ -3,13 +3,33 @@ services:
     image: postgres:16
     container_name: postgres
     environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
-      POSTGRES_DB: prove
+      POSTGRES_USER: ${PG_USER}
+      POSTGRES_PASSWORD: ${PG_PASS}
+      POSTGRES_DB: ${PG_DB}
+    env_file:
+      - .env  # Load environment variables from .env file
     ports:
-      - "5432:5432"
+      - "${FORWARD_DB_PORT:-5433}:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -q -d ${PG_DB} -U ${PG_USER}" ]
+      interval: 10s
+      timeout: 3s
+      retries: 3
+
+  # tool for migrations
+  dbmate:
+    image: ghcr.io/amacneil/dbmate:main
+    volumes:
+      - .:/workdir
+    working_dir: /workdir
+    env_file:
+      - .env
+    depends_on:
+      - postgres
+    profiles:
+      - tools # exclude from default starts
 
 volumes:
   postgres_data:
