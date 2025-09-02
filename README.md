@@ -4,33 +4,28 @@ This project is designed as a showcase to demonstrate modern technologies, patte
 Spring Modulith is used in the project to enable a clean, modular architecture that combines the simplicity of a monolith with strong boundaries and maintainability between business modules. It helps organize code by domains, improves testability, allows easier refactoring, and prepares the application for possible future migration to microservices—without introducing the complexity of a distributed system too early.
 
 # Get up and running
-Info: project uses java version 21
+Prerequisites: docker compose, git, sdk man
 ```sh
-java -version
-openjdk version "21.0.8" 2025-07-15 LTS
-```
-1. Clone repository
-```sh
-git clone https://github.com/dkotrada/prove.git
+sdk current java
+Using java version 21.0.6-amzn
 ```
 
-2. Setup provelib dependency in mavenLocal
+Clone repository, change to projectfolder
 ```sh
- cd prove
+git clone https://github.com/dkotrada/prove.git && cd prove
+```
+
+Setup provelib dependency in mavenLocal
+```sh
 ./gradlew bootstrapProvelib
 ```
 
-3. Build
-```sh
-./gradlew build
-```
-
-3. Start application
+Start application
 ```sh
 ./gradlew bootRun
 ```
 
-4. API Request
+API Request
 ```sh
 curl http://localhost:8080/orders/nonexistent
 ```

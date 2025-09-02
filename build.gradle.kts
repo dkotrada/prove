@@ -1,6 +1,3 @@
-import org.gradle.api.tasks.Exec
-import java.io.File
-
 plugins {
 	java
 	id("org.springframework.boot") version "3.5.4"
