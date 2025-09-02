@@ -29,6 +29,7 @@ dependencies {
 	implementation("org.springframework.boot:spring-boot-starter-data-jpa")
 	implementation("org.springframework.boot:spring-boot-starter-validation")
 	implementation("org.postgresql:postgresql")
+	implementation("org.springframework.boot:spring-boot-docker-compose")
 	implementation("org.hibernate.orm:hibernate-community-dialects:6.6.22.Final")
 	implementation("org.springframework.modulith:spring-modulith-starter-core:1.3.2")
 	testImplementation("org.springframework.modulith:spring-modulith-starter-test:1.3.2")
