@@ -40,27 +40,43 @@ tasks.withType<Test> {
 	useJUnitPlatform()
 }
 
-val provelibDir = File(rootProject.projectDir.parentFile, "provelib")
+tasks.wrapper {
+	gradleVersion = "9.0"
+}
 
-tasks.register("bootstrapProvelib") {
-    group = "setup"
-    description = "Bootstraps local development by cloning and publishing provelib."
+abstract class BootstrapProvelibTask @Inject constructor(
+	private val execOps: ExecOperations,
+	private val objects: ObjectFactory
+) : DefaultTask() {
 
-    doLast {
-        if (!provelibDir.exists()) {
-            println("Cloning provelib...")
-            exec {
-                workingDir = rootProject.projectDir.parentFile
-                commandLine("git", "clone", "https://github.com/dkotrada/provelib.git")
-            }
-        } else {
-            println("provelib already exists at: $provelibDir")
-        }
+	private val provelibDirProp: DirectoryProperty = objects.directoryProperty().convention(project.layout.projectDirectory.dir("../provelib"))
 
-        println("Publishing provelib to mavenLocal...")
-        exec {
-            workingDir = provelibDir
-            commandLine("./gradlew", "publish")
-        }
-    }
+	@TaskAction
+	fun bootstrap() {
+		val pDir = provelibDirProp.get().asFile
+		if (!pDir.exists()) {
+			println("Cloning provelib...")
+			execOps.exec {
+				workingDir = project.rootProject.projectDir.parentFile
+				commandLine("git", "clone", "https://github.com/dkotrada/provelib.git")
+			}
+		} else {
+			println("Updating provelib...")
+			execOps.exec {
+				workingDir = pDir
+				commandLine("git", "pull")
+			}
+		}
+
+		println("Publishing provelib to mavenLocal...")
+		execOps.exec {
+			workingDir = pDir
+			commandLine("./gradlew", "publish")
+		}
+	}
+}
+
+tasks.register<BootstrapProvelibTask>("bootstrapProvelib") {
+	group = "setup"
+	description = "Bootstraps local development by cloning/updating and publishing provelib."
 }
