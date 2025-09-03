@@ -15,6 +15,7 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.UUID;
 
 @Service
 public class OrderService {
@@ -27,7 +28,8 @@ public class OrderService {
     }
 
     @Transactional
-    public void placeOrder(String orderId, List<OrderItemDto> items, String customerId) {
+    public String placeOrder(List<OrderItemDto> items, String customerId) {
+        String orderId = UUID.randomUUID().toString();
         List<OrderItem> orderItems = items.stream()
                 .map(dto -> new OrderItem(dto.getProductId(), dto.getQuantity(), dto.getPrice()))
                 .toList();
@@ -35,6 +37,7 @@ public class OrderService {
         Order order = Order.create(orderId, customerId, orderItems);
         orderRepository.save(order);
         eventPublisher.publishEvent(new OrderPlacedEvent(orderId, items, customerId));
+        return orderId;
     }
 
     @Transactional(readOnly = true)

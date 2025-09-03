@@ -7,9 +7,7 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
 import java.net.URI;
-import java.util.UUID;
 
 @org.springframework.web.bind.annotation.RestController
 @RequestMapping("/orders")
@@ -22,8 +20,7 @@ public class OrderRestApi {
 
     @PostMapping
     public ResponseEntity<String> createOrder(@Valid @RequestBody OrderRequestDto request) {
-        String orderId = UUID.randomUUID().toString();
-        orderService.placeOrder(orderId, request.items(), request.customerId());
+        String orderId = orderService.placeOrder(request.items(), request.customerId());
         return ResponseEntity.created(URI.create("/orders/" + orderId)).body(orderId);
     }
 
