@@ -9,6 +9,8 @@ import com.prove.prove.order.internal.OrderRepository;
 import com.prove.prove.events.OrderPaidEvent;
 import com.prove.prove.events.PaymentInitiatedEvent;
 import com.prove.prove.events.PaymentValidatedEvent;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.context.event.EventListener;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.context.ApplicationEventPublisher;
@@ -19,6 +21,7 @@ import java.util.UUID;
 
 @Service
 public class OrderService {
+    private static final Logger logger = LoggerFactory.getLogger(OrderService.class);
     private final ApplicationEventPublisher eventPublisher;
     private final OrderRepository orderRepository;
 
@@ -42,6 +45,7 @@ public class OrderService {
 
     @Transactional(readOnly = true)
     public OrderResponseDto findOrderByIdOrThrow(String orderId) {
+        logger.debug("Fetching order {}", orderId);
         return orderRepository.findById(orderId)
                 .map(order -> new OrderResponseDto(
                         order.getOrderId(),
@@ -62,6 +66,7 @@ public class OrderService {
     @EventListener
     @Transactional
     void handleOrderPaidEvent(OrderPaidEvent event) {
+        logger.debug("OrderPlaced event for order {}", event.orderId());
         orderRepository.findById(event.orderId())
                 .ifPresent(order -> {
                     order.setStatus("PAID");
@@ -72,6 +77,7 @@ public class OrderService {
     @EventListener
     @Transactional(readOnly = true)
     void handlePaymentInitiatedEvent(PaymentInitiatedEvent event) {
+        logger.debug("PaymentInitiatedEvent for payment {}", event.paymentId());
         if (!orderRepository.existsById(event.orderId())) {
             throw new OrderNotFoundException(event.orderId());
         }

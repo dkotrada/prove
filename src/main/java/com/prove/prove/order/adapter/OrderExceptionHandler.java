@@ -30,7 +30,8 @@ public class OrderExceptionHandler {
                 HttpStatus.BAD_REQUEST,
                 "Validation Failed",
                 "One or more fields have iinvalid values",
-                errors
+                errors,
+                ""
         );
     }
 
@@ -48,7 +49,8 @@ public class OrderExceptionHandler {
                 HttpStatus.BAD_REQUEST,
                 "Constraint Violation",
                 "Invalid request parameters",
-                errors
+                errors,
+                ""
         );
     }
 
@@ -58,7 +60,8 @@ public class OrderExceptionHandler {
                 HttpStatus.NOT_FOUND,
                 "Not Found",
                 ex.getMessage(),
-                Map.of()
+                Map.of(),
+                ""
         );
     }
 
@@ -68,20 +71,22 @@ public class OrderExceptionHandler {
                 HttpStatus.INTERNAL_SERVER_ERROR,
                 "Internal Server Error",
                 ex.getMessage(),
-                Map.of()
+                Map.of(),
+                ""
         );
     }
 
     private ResponseEntity<ErrorResponse> buildResponse(
             HttpStatus status, String error, String message,
-            Map<String, String> errors
+            Map<String, String> errors, String path
             ) {
         ErrorResponse response = new ErrorResponse(
                 LocalDateTime.now(),
                 status.value(),
                 error,
                 message,
-                errors
+                errors,
+                path
         );
         return new ResponseEntity<>(response, status);
     }

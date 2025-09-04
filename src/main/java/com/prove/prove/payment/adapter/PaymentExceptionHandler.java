@@ -29,7 +29,7 @@ public class PaymentExceptionHandler {
     }
 
     @ExceptionHandler(ConstraintViolationException.class)
-    public ResponseEntity<ErrorResponse> handleContraintViolationException(ConstraintViolationException ex) {
+    public ResponseEntity<ErrorResponse> handleConstraintViolationException(ConstraintViolationException ex) {
         Map<String, String> errors = new HashMap<>();
         ex.getConstraintViolations().forEach(cv ->
                 errors.put(String.valueOf(cv.getPropertyPath()), cv.getMessage()));
@@ -54,7 +54,7 @@ public class PaymentExceptionHandler {
 
     private ResponseEntity<ErrorResponse> buildResponse(
             HttpStatus status, String error, String message, Map<String, String> errors) {
-        ErrorResponse response = new ErrorResponse(LocalDateTime.now(), status.value(), error, message, errors);
+        ErrorResponse response = new ErrorResponse(LocalDateTime.now(), status.value(), error, message, errors, "");
         return new ResponseEntity<>(response, status);
     }
 }
