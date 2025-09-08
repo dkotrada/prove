@@ -45,3 +45,19 @@ After dbmate usage
 ```shell
 docker compose down
 ```
+
+# Implementation Roadmap
+- [x] Modules - [Spring Modulith](https://spring.io/projects/spring-modulith)
+- [x] Events - [Application Events](https://docs.spring.io/spring-modulith/reference/events.html)
+- [x] Migrations - [Dbmate](https://github.com/amacneil/dbmate?tab=readme-ov-file#dbmate)
+- [x] Logging - Logback
+- [x] Testcontainers - PostgresSQL
+- [x] Integration Tests
+- [ ] OpenAPI
+- [ ] Spring Security
+- [ ] JWT - Json Web Token
+- [ ] RBAC - Role-Based Access Control
+- [ ] Observability Actuator
+- [ ] Metrics Micrometer
+- [ ] ... 
+
