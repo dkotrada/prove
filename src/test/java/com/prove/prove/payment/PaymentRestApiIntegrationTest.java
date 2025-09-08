@@ -3,13 +3,13 @@ package com.prove.prove.payment;
 import com.prove.prove.BaseIntegrationTest;
 import com.prove.prove.TestUtils;
 import com.prove.prove.inventory.ProductRequestDto;
+import com.prove.prove.inventory.adapter.ProductCreatedResponse;
 import com.prove.prove.order.OrderRequestDto;
-import com.prove.prove.order.OrderResponseDto;
+import com.prove.prove.order.adapter.OrderCreatedResponse;
+import com.prove.prove.payment.adapter.PaymentCreatedResponse;
+import com.tagitech.provelib.ErrorResponse;
 import com.tagitech.provelib.dto.OrderItemDto;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.http.*;
@@ -29,14 +29,15 @@ class PaymentRestApiIntegrationTest extends BaseIntegrationTest {
     void setupProduct() {
         String productJson = TestUtils.toJson(
                 new ProductRequestDto(productId, "Mouse", 100, 29.99));
-        ResponseEntity<String> productResponse = TestUtils.makeHttpRequest(
+        ResponseEntity<ProductCreatedResponse> productResponse = TestUtils.makeHttpRequest(
                 baseUrl("/products"),
                 HttpMethod.POST,
                 productJson,
-                String.class
+                ProductCreatedResponse.class
         );
+        assertThat(productResponse.getStatusCode()).isEqualTo(HttpStatus.CREATED);
         Assertions.assertNotNull(productResponse.getBody());
-        Assertions.assertEquals(productId, productResponse.getBody());
+        Assertions.assertEquals(productId, productResponse.getBody().productId());
     }
 
     @BeforeEach
@@ -44,26 +45,27 @@ class PaymentRestApiIntegrationTest extends BaseIntegrationTest {
         // Order in existence before test
         String orderJson = TestUtils.toJson(new OrderRequestDto("customer-123", List.of(
                 new OrderItemDto(productId, 10, 15))));
-        ResponseEntity<String> orderResponse = TestUtils.makeHttpRequest(
+        ResponseEntity<OrderCreatedResponse> orderResponse = TestUtils.makeHttpRequest(
                 baseUrl("/orders"),
                 HttpMethod.POST,
                 orderJson,
-                String.class
+                OrderCreatedResponse.class
         );
         assertThat(orderResponse.getStatusCode()).isEqualTo(HttpStatus.CREATED);
-        orderId = orderResponse.getBody();
-        Assertions.assertNotNull(orderId, "Order ID should not be null");
+        Assertions.assertNotNull(orderResponse.getBody());
+        orderId = orderResponse.getBody().orderId();
     }
 
     @Test
+    @DisplayName("Should successfully create a payment")
     void shouldCreatePaymentSuccessfully() {
 
         String json = TestUtils.toJson(new PaymentRequestDto(orderId, 150.0));
-        ResponseEntity<String> response = TestUtils.makeHttpRequest(
+        ResponseEntity<PaymentCreatedResponse> response = TestUtils.makeHttpRequest(
                 baseUrl("/payments"),
                 HttpMethod.POST,
                 json,
-                String.class
+                PaymentCreatedResponse.class
         );
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CREATED);
@@ -71,6 +73,7 @@ class PaymentRestApiIntegrationTest extends BaseIntegrationTest {
     }
 
     @Test
+    @DisplayName("Should reject negative amount in transaction")
     void shouldRejectNegativeAmount() {
 
         String json = TestUtils.toJson(new PaymentRequestDto(orderId, -10.0));
@@ -78,14 +81,15 @@ class PaymentRestApiIntegrationTest extends BaseIntegrationTest {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
 
-        ResponseEntity<String> response = restTemplate.exchange(
+        ResponseEntity<ErrorResponse> response = restTemplate.exchange(
                 baseUrl("/payments"),
                 HttpMethod.POST,
                 new HttpEntity<>(json, headers),
-                String.class
+                ErrorResponse.class
         );
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
-        assertThat(response.getBody()).contains("Amount must be positive");
+        assertThat(response.getBody()).isNotNull();
+        assertThat(response.getBody().getErrors().get("amount")).isEqualTo("Amount must be positive");
     }
 }

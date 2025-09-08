@@ -20,9 +20,11 @@ public class PaymentRestApi {
     }
 
     @PostMapping
-    public ResponseEntity<String> createPayment(@Valid @RequestBody PaymentRequestDto request) {
+    public ResponseEntity<PaymentCreatedResponse> createPayment(@Valid @RequestBody PaymentRequestDto request) {
         String paymentId = paymentService.processPayment(request);
-        return ResponseEntity.created(URI.create("/payments/" + paymentId)).body(paymentId);
+        return ResponseEntity.created(URI.create("/payments/" + paymentId)).body(
+                new PaymentCreatedResponse(paymentId, "CREATED")
+        );
     }
 
     @GetMapping("/{id}")

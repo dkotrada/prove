@@ -19,9 +19,10 @@ public class OrderRestApi {
     }
 
     @PostMapping
-    public ResponseEntity<String> createOrder(@Valid @RequestBody OrderRequestDto request) {
+    public ResponseEntity<OrderCreatedResponse> createOrder(@Valid @RequestBody OrderRequestDto request) {
         String orderId = orderService.placeOrder(request.items(), request.customerId());
-        return ResponseEntity.created(URI.create("/orders/" + orderId)).body(orderId);
+        return ResponseEntity.created(URI.create("/orders/" + orderId))
+                .body(new OrderCreatedResponse(orderId, "CREATED"));
     }
 
     @GetMapping("/{id}")

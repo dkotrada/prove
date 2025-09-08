@@ -22,8 +22,10 @@ public class InventoryRestApi {
     }
 
     @PostMapping
-    public ResponseEntity<String> createProduct(@Valid @RequestBody ProductRequestDto product) {
+    public ResponseEntity<ProductCreatedResponse> createProduct(@Valid @RequestBody ProductRequestDto product) {
         String productId = inventoryService.addProduct(product);
-        return ResponseEntity.created(URI.create("/products/" + productId)).body(productId);
+        return ResponseEntity.created(URI.create("/products/" + productId)).body(
+                new ProductCreatedResponse(productId)
+        );
     }
 }
