@@ -1,5 +1,6 @@
 package com.prove.prove.inventory;
 
+import com.prove.prove.inventory.internal.Product;
 import com.tagitech.provelib.dto.OrderItemDto;
 import com.prove.prove.inventory.internal.InventoryRepository;
 import com.prove.prove.events.OrderPlacedEvent;
@@ -16,6 +17,14 @@ public class InventoryService {
 
     public InventoryService(InventoryRepository inventoryRepository) {
         this.inventoryRepository = inventoryRepository;
+    }
+
+    @Transactional
+    public String addProduct(ProductRequestDto request) {
+        logger.debug("Adding product {}", request.productId());
+        Product product  = inventoryRepository.save(
+                new Product(request.productId(), request.name(), request.quantity(), request.price()));
+        return product.getProductId();
     }
 
     @EventListener
