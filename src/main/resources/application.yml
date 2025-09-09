@@ -18,7 +18,7 @@ spring:
 cors:
   allowed-origins:
     - "http://localhost:5173"
-    - "https://prove.tagitech.com"
+    - "https://prove-vue.tagitech.com"
     - "https://*.tagitech.com"  # Wildcard. tagitech is trusted domain.
   allowed-methods:
     - GET
