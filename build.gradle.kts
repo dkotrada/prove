@@ -29,6 +29,7 @@ dependencies {
 	implementation("org.hibernate.orm:hibernate-community-dialects:6.6.22.Final")
 	implementation("org.springframework.modulith:spring-modulith-starter-core:1.3.2")
 	implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
+	implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.13")
 	testImplementation("com.fasterxml.jackson.module:jackson-module-kotlin")
 	testImplementation("org.springframework.boot:spring-boot-starter-json")
 	testImplementation("org.springframework.modulith:spring-modulith-starter-test:1.3.2")
